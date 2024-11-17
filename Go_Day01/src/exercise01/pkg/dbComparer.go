@@ -29,8 +29,14 @@ func getFileNames() (filename_old string, filename_new string){
 }
 
 func comparedb(old_db readDB.DataBase, new_db readDB.DataBase){
+	addedCakes(old_db, new_db)
+	removedCakes(old_db, new_db)
+	compareTime(old_db, new_db)
+	compareIngridients(old_db, new_db)
+}
+
+func addedCakes(old_db readDB.DataBase, new_db readDB.DataBase){
 	oldDBMap := make(map[string]readDB.Cake)
-	newDBMap := make(map[string]readDB.Cake)
 	for _, cake := range old_db.Cakes{
 		oldDBMap[cake.Name] = cake
 	}
@@ -40,6 +46,10 @@ func comparedb(old_db readDB.DataBase, new_db readDB.DataBase){
 			fmt.Printf("ADDED cake \"%s\"\n", newCake.Name)
 		}
 	}
+}
+
+func removedCakes(old_db readDB.DataBase, new_db readDB.DataBase){
+	newDBMap := make(map[string]readDB.Cake)
 	for _, cake := range new_db.Cakes{
 		newDBMap[cake.Name] = cake
 	}
@@ -49,5 +59,50 @@ func comparedb(old_db readDB.DataBase, new_db readDB.DataBase){
 			fmt.Printf("REMOVED cake \"%s\"\n", oldCake.Name)
 		}
 	}
-	
+}
+
+func compareTime(old_db readDB.DataBase, new_db readDB.DataBase){
+	oldDBMap := make(map[string]readDB.Cake)
+	for _, cake := range old_db.Cakes{
+		oldDBMap[cake.Name] = cake
+	}
+	for _, newCake := range new_db.Cakes{
+
+		oldCake, exists := oldDBMap[newCake.Name]
+		if !exists{
+			continue
+		}
+		if oldCake.Time != newCake.Time{
+			fmt.Printf("CHANGED cooking time for cake \"%s\" - \"%s\" instead of \"%s\"\n", oldCake.Name, newCake.Time, oldCake.Time)
+		}
+	}
+}
+
+func compareIngridients(old_db readDB.DataBase, new_db readDB.DataBase){
+	oldDBMap := make(map[string]readDB.Cake)
+	for _, cake := range old_db.Cakes{
+		oldDBMap[cake.Name] = cake
+	}
+	for _, newCake := range new_db.Cakes{
+		oldCake, exists := oldDBMap[newCake.Name]
+		if !exists{
+			continue
+		}
+		oldIngredientsMap := make(map[string]readDB.Ingridient)
+		for _, ingredient := range oldCake.Ingredients{
+			oldIngredientsMap[ingredient.Ingredient_name] = ingredient
+		}
+		for _, newIngredient := range newCake.Ingredients {
+			if _, exists := oldIngredientsMap[newIngredient.Ingredient_name]; !exists {
+				// Новый ингредиент, которого нет в старом торте
+				fmt.Printf("ADDED ingredient \"%s\" for cake \"%s\"\n", newIngredient.Ingredient_name, newCake.Name)
+			}
+		}
+		for _, oldIngredient := range oldCake.Ingredients {
+			if _, exists := oldIngredientsMap[oldIngredient.Ingredient_name]; !exists {
+				// Старый ингредиент, который был удалён
+				fmt.Printf("REMOVED ingredient \"%s\" for cake \"%s\"\n", oldIngredient.Ingredient_name, newCake.Name)
+			}
+		}
+	}
 }
