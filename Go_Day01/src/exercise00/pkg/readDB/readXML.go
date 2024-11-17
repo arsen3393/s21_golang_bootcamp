@@ -7,16 +7,16 @@ import (
 )
 
 
-func readXML(filename string){
-	db := new(DataBase)
+func (db *DataBase) ReadXML(filename string){
 	dataFromFile := getDataFromFile(filename)
 	if err := xml.Unmarshal(dataFromFile, &db); err != nil{
 		log.Fatal(err)
 	}
-	outputXML(*db)
 }
 
-func outputXML(db DataBase){
+func outputXML(filename string){
+	db := &DataBase{}
+	db.ReadXML(filename)
 	data, err := xml.MarshalIndent(&db, "", "    ")
 	if err != nil{
 		log.Fatal(err)

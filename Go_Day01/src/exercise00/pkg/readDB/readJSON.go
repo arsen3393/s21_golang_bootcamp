@@ -6,17 +6,18 @@ import (
 	"log"
 )
 
-func readJSON(filename string){
-	db := new(DataBase)
+func (db *DataBase) ReadJSON(filename string){
 	dataFromFile := getDataFromFile(filename)
 	if err := json.Unmarshal(dataFromFile, &db); err != nil{
 		log.Fatal(err)
 	}
-	outputJSON(*db)
-	//output
+
 }
 
-func outputJSON(db DataBase){
+
+func outputJSON(filename string){
+	db := &DataBase{}
+	db.ReadJSON(filename)
 	data, err := json.MarshalIndent(&db, "", "    ")
 	if err != nil{
 		log.Fatal(err)

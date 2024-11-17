@@ -30,9 +30,9 @@ type DataBase struct{
 func ReadDB(){
 	filename, format := getFileName()
 	if format == "json"{
-		readJSON(filename)
+		outputJSON(filename)
 	}else if format == "xml"{
-		readXML(filename)
+		outputXML(filename)
 	}else{
 		fmt.Print("Неправильный формат файла, используй xml или json\n")
 		os.Exit(1)
