@@ -1,6 +1,6 @@
 package main
 
-import "GoDay01/pkg/readDB"
+import "exercise00/pkg/readDB"
 
 func main(){
 	readDB.ReadDB()
