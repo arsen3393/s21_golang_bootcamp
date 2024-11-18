@@ -19,7 +19,7 @@ type Ingridient struct{
 type Cake struct{
 	Name string `json:"name" xml:"name"`
 	Time string `json:"time" xml:"stovetime"`
-	Ingridients []Ingridient `json:"ingredients" xml:"ingredients"`
+	Ingredients []Ingridient `json:"ingredients" xml:"ingredients"`
 }
 
 type DataBase struct{
